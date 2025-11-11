@@ -18,7 +18,6 @@ public:
 	AVLTree(const AVLTree& other);
 	size_t& operator[](const string& key);
 	void operator=(const AVLTree& other);
-
     using KeyType = std::string;
     using ValueType = size_t;
 
@@ -53,8 +52,8 @@ protected:
     	std::string getKey();
     	size_t getValue();
     	size_t& getValueRef();
-    	AVLNode* getLeft();
-    	AVLNode* getRight();
+		AVLNode *&getLeft();
+		AVLNode *&getRight();
     	int getHeight();
     	int getBalance();
     	int getNumChildren();
@@ -70,13 +69,13 @@ protected:
     private:
     AVLNode* root;
 
+	bool insertNode(string& key, size_t value, AVLNode*& current);
+
     /* Helper methods for remove */
-    // this overloaded remove will do the recursion to remove the node
     bool remove(AVLNode*& current, KeyType key);
-    // removeNode contains the logic for actually removing a node based on the numebr of children
     bool removeNode(AVLNode*& current);
-    // You will implement this, but it is needed for removeNode()
-    void balanceNode(AVLNode*& node);
+    void balanceNode(AVLNode*& node);	// You will implement this, but it is needed for removeNode()
+
 
 };
 

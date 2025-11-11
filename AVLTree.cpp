@@ -6,17 +6,72 @@
 
 #include "AVLTree.h"
 
+#include <ios>
 #include <string>
+
+// constructor
+AVLTree::AVLTree() {}
+
+/**
+ * Creates a deep copy of an AVLTree.
+ *
+ * @param other the AVLTree being copied
+ */
+AVLTree::AVLTree(const AVLTree& other) {}
 
 /**
  * Insert a new key-value pair into the tree. After a successful insert, the tree is rebalanced if necessary.
- * Duplicate keys are disallowed
+ * Duplicate keys and values are disallowed
  *
  * @param key the key being inserted
  * @param value the value being inserted
  * @return returns true if the insertion is successful, returns false otherwise.
  */
 bool AVLTree::insert(const std::string& key, size_t value) {
+	// check for duplicate keys
+	if (contains(key)) {
+		return false;
+	}
+	std::string nonConstKey = key;
+
+	// try to insert key-value pair. Will fail if the value is already in the AVLTree.
+	if (insertNode(nonConstKey, value, root)) {
+		// TODO: rebalance root.
+		return true;
+	}
+	return false;
+}
+
+/**
+ * Recursive helper method of insert.
+ *
+ * Base case occurs when insertNode reaches a nullptr,
+ * this means it is where the new value should be inserted.
+ *
+ * @param val the value being added to the AVLTree
+ * @param current the current node
+ * @return returns true if the key-value pair was inserted. Returns false otherwise.
+ */
+bool AVLTree::insertNode(std::string& key, size_t val, AVLNode *&current) {
+	// base case: current is nullptr. Insert here. //
+	if (current == nullptr) {
+		current = new AVLNode(key, val);
+		return true;
+	}
+
+	// if value > currValue, continue down right subtree, and vise versa.
+	if (val > current->getValue()) { // right subtree
+		if (insertNode(key, val, current->getRight())) {
+			return true;}
+	}
+	else if (val < current->getValue()) {
+		// left subtree
+		if (insertNode(key, val, current->getLeft())) {
+			return true;}
+	}
+	else { // should in theory only reach this when there's a duplicate value
+		return false;
+	}
 	return false;
 }
 
