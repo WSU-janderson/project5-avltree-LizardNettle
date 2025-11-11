@@ -67,8 +67,8 @@ int BSTNode::getHeight() {
 
 int BSTNode::getBalance() {}
 
-bool BSTNode::isLeaf() {
-	return this->left == nullptr && this->right == nullptr;
-}
+// bool BSTNode::isLeaf() {
+// 	return this->left == nullptr && this->right == nullptr;
+// }
 
 
