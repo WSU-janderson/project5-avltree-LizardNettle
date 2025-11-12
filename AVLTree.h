@@ -68,13 +68,14 @@ protected:
 
     private:
     AVLNode* root;
+	void balanceNode(AVLNode*& node);
 
+	/* Helper method for Insert */
 	bool insertNode(string& key, size_t value, AVLNode*& current);
 
     /* Helper methods for remove */
-    bool remove(AVLNode*& current, KeyType key);
+    bool remove(AVLNode*& current, KeyType key, size_t value);
     bool removeNode(AVLNode*& current);
-    void balanceNode(AVLNode*& node);	// You will implement this, but it is needed for removeNode()
 
 
 };

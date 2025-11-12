@@ -69,32 +69,70 @@ bool AVLTree::insertNode(std::string& key, size_t val, AVLNode *&current) {
 		if (insertNode(key, val, current->getLeft())) {
 			return true;}
 	}
-	else { // should in theory only reach this when there's a duplicate value
-		return false;
-	}
 	return false;
 }
 
 /**
+ * If the key is in the tree, remove() will delete the key-value pair from the tree. The memory allocated
+ * for the node that is removed will be released. After removing the key-value pair, the tree is
+ * rebalanced if necessary.
  *
  * @param key the key being removed from the AVLTree
  * @return returns true if the key was found and removed, returns false otherwise.
  */
 bool AVLTree::remove(const std::string& key) {
+	// variables //
+	std::string nonConstKey = key;
+	std::optional<size_t> value = get(key);
+
+	// if a value associated with the key can be found, try to remove.
+	if (value.has_value()) {
+		if (remove(root, nonConstKey, value.value())) {
+			// TODO: rebalance // call rebalance if necessary
+			return true;
+		}
+	}
 	return false;
 }
 /**
- * recursive and overloaded helper method of remove. DESCRIBE METHOD FURTHER.
+ * recursive and overloaded helper method of remove.
  *
  * @param current the current node being checked
  * @param key the key of the node being removed.
  * @return
  */
-bool AVLTree::remove(AVLNode *&current, KeyType key) {
+bool AVLTree::remove(AVLNode *&current, KeyType key, size_t value) {
+	// BASE CASE 1: nullptr, key not in tree //
+	if (current == nullptr) {
+		return false;
+	}
+	// BASE CASE 2: key found //
+	if (current->getKey() == key) {
+		if (removeNode(current)) {
+			return true;
+		}
+		return false; // shouldn't be reached in theory
+	}
+
+	// Recurse down right subtree
+	if (value > current->getValue()) {
+		if (remove(current->getRight(), key, value)) {
+			return true;
+		}
+	}
+	// Recurse down left subtree
 	return false;
 }
 
 
+std::optional<size_t> get(const string& key) {
+	return 1;
+}
+
+/**
+ *
+ * @param node the node being balanced.
+ */
 void AVLTree::balanceNode(AVLNode *&node) {
 }
 
