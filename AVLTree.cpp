@@ -88,7 +88,10 @@ bool AVLTree::remove(const std::string& key) {
 	// if a value associated with the key can be found, try to remove.
 	if (value.has_value()) {
 		if (remove(root, nonConstKey, value.value())) {
-			// TODO: rebalance // call rebalance if necessary
+			size_t height = getHeight();
+			if (height > 1 || height < -1) {
+				// TODO: rebalance
+			}
 			return true;
 		}
 	}
@@ -172,7 +175,7 @@ bool AVLTree::removeNode(AVLNode*& current){
         }
         std::string newKey = smallestInRight->key;
         int newValue = smallestInRight->value;
-        remove(root, smallestInRight->key); // delete this one
+        remove(root, smallestInRight->key, smallestInRight->value); // delete this one
 
         current->key = newKey;
         current->value = newValue;
@@ -205,10 +208,30 @@ bool AVLTree::AVLNode::isLeaf() const {
 }
 
 /**
- * checks the height of the AVLTree by checking against a list of all BSTNodes
- * and returning the largest height value.
+ * Checks the height of the AVLTree by checking the left and right subtrees of root
+ * recursively and returning the higher value
  * @return returns the height of the AVLTree
  */
-size_t AVLTree::AVLNode::getHeight() const {
-	return 0;
+size_t AVLTree::getHeight() const {
+	return height(root);
+}
+
+/**
+ * recursively gets the height of both subtrees via inorder traversal.
+ *
+ * @param current the current node being visited
+ * @return returns the height of the AVLTree.
+ */
+size_t AVLTree::height(AVLNode* current) const {
+	// BASE CASE: if nullptr, return empty list
+	if (current == nullptr) {
+		return 0;
+	}
+	// get the height of both subtrees, and return 1 + the larger subtree as the height
+	size_t leftHeight = height(current->left);
+	size_t rightHeight = height(current->right);
+	if (leftHeight > rightHeight) {
+		return 1 + leftHeight;
+	}
+	return 1 + rightHeight;
 }

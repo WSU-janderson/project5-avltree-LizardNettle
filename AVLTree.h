@@ -70,11 +70,11 @@ protected:
     AVLNode* root;
 	void balanceNode(AVLNode*& node);
 
-	/* Helper method for Insert */
+	/* Recursive helper methods */
+	size_t height(AVLNode* current) const;
+	size_t inorderTraversal(AVLNode*& current);
 	bool insertNode(string& key, size_t value, AVLNode*& current);
-
-    /* Helper methods for remove */
-    bool remove(AVLNode*& current, KeyType key, size_t value);
+	bool remove(AVLNode*& current, KeyType key, size_t value);
     bool removeNode(AVLNode*& current);
 
 
