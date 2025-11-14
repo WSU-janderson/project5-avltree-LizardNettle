@@ -128,7 +128,7 @@ bool AVLTree::remove(AVLNode *&current, KeyType key, size_t value) {
 }
 
 
-std::optional<size_t> get(const string& key) {
+std::optional<size_t> AVLTree::get(const string& key) const {
 	return 1;
 }
 
@@ -137,11 +137,43 @@ std::optional<size_t> get(const string& key) {
  * @param node the node being balanced.
  */
 void AVLTree::balanceNode(AVLNode *&node) {
+	// Update height of Node and calculate balance factor
+	updateHeight(node);
+	size_t balanceFactor = getBalanceFactor(node);
+
+	// BALANCE FACTOR > 1: Left heavy  //
+	if (balanceFactor > 1) {
+		// left-left (single rotation)
+		if ((node->getLeft()->getLeft()->getNodeHeight()) >= (node->getLeft()->getRight()->getNodeHeight())) {
+			// rotateRight(node);
+		}
+		else { // Left-right (double rotation)
+			// rotateLeftRight(node);
+		}
+	}
+	// BALANCE FACTOR < -1: Left heavy //
+	if (balanceFactor < -1) {
+		// right-right (single rotation)
+		if (node->getRight()->getRight()->getHeight() >= (node->getRight()->getLeft()->getHeight())) {
+			// rotateLeft(node);
+		}
+		else { // right-left (double rotation)
+			// rotateLeftRight(node);
+		}
+	}
 }
 
+void AVLTree::updateHeight(AVLNode*& node) {
+	return;
+}
+
+size_t AVLTree::getBalanceFactor(AVLNode*& node) {
+	return static_cast<size_t>(node->getLeft()->getNodeHeight() - node->getRight()->getNodeHeight());
+}
+
+
 /**
- * removeNode contains all of the logic for actually removing the nodes.
- * Helper method for remove.
+ * removeNode is a helper method for remove which contains all logic for  removing the nodes.
  *
  * @param current the node being removed
  * @return returns true if current was removed, returns false otherwise.
@@ -191,23 +223,6 @@ bool AVLTree::removeNode(AVLNode*& current){
 }
 
 /**
- * @return returns the number of children the AVLNode has (always 0, 1, or 2)
- */
-size_t AVLTree::AVLNode::numChildren() const {
-	if (this->left != nullptr && this->right != nullptr) {
-		return 2;
-	}
-	if (this->left != nullptr || this->right != nullptr) {
-		return 1;
-	}
-	return 0;
-}
-
-bool AVLTree::AVLNode::isLeaf() const {
-	return this->left == nullptr && this->right == nullptr;
-}
-
-/**
  * Checks the height of the AVLTree by checking the left and right subtrees of root
  * recursively and returning the higher value
  * @return returns the height of the AVLTree
@@ -235,3 +250,88 @@ size_t AVLTree::height(AVLNode* current) const {
 	}
 	return 1 + rightHeight;
 }
+
+/*
+=================
+= AVLNode Class =
+= ------------- =================================================
+= The AVLNode class defines the nodes which make up an AVLTree. =
+================================================================= */
+AVLTree::AVLNode::AVLNode() {
+	this->key = "";
+	this->value = 0;
+	this->left = nullptr;
+	this->right = nullptr;
+	height = 0;
+}
+AVLTree::AVLNode::AVLNode(std::string &key, size_t value) {
+	this->key = key;
+	this->value = value;
+	this->left = nullptr;
+	this->right = nullptr;
+	height = 0;
+}
+
+void AVLTree::AVLNode::load(std::string &key, size_t value) {
+	this->key = key;
+	this->value = value;
+}
+
+AVLTree::AVLNode* AVLTree::AVLNode::insertRight(AVLNode* rightChild) {
+	this->right = rightChild;
+}
+
+AVLTree::AVLNode* AVLTree::AVLNode::insertLeft(AVLNode* leftChild) {
+	this->right = leftChild;
+}
+
+void AVLTree::AVLNode::setHeight(int height) {
+	this->height = height;
+}
+
+
+// ACCESSORS //
+std::string AVLTree::AVLNode::getKey() {
+	return this->key;
+}
+
+size_t AVLTree::AVLNode::getValue() {
+	return this->value;
+}
+
+size_t &AVLTree::AVLNode::getValueRef() {
+	return this->value;
+}
+
+AVLTree::AVLNode *&AVLTree::AVLNode::getLeft() {
+	return this->left;
+}
+
+AVLTree::AVLNode *&AVLTree::AVLNode::getRight() {
+	return this->right;
+}
+
+int AVLTree::AVLNode::getNodeHeight() {
+	return this->height;
+}
+
+/**
+ * @return returns the number of children the AVLNode has (always 0, 1, or 2)
+ */
+int AVLTree::AVLNode::getNumChildren() {
+	if (this->left != nullptr && this->right != nullptr) {
+		return 2;
+	}
+	if (this->left != nullptr || this->right != nullptr) {
+		return 1;
+	}
+	return 0;
+}
+
+bool AVLTree::AVLNode::isLeaf() {
+	return this->left == nullptr && this->right == nullptr;
+}
+
+
+
+

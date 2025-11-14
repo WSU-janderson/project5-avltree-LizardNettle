@@ -54,21 +54,20 @@ protected:
     	size_t& getValueRef();
 		AVLNode *&getLeft();
 		AVLNode *&getRight();
-    	int getHeight();
+    	int getNodeHeight();
     	int getBalance();
     	int getNumChildren();
     	bool isLeaf();
-
-
-    	size_t numChildren() const;
-        bool isLeaf() const;
-        // number of hops to deepest leaf node
         size_t getHeight() const;
     };
 
     private:
     AVLNode* root;
+	/* Methods for rebalancing */
 	void balanceNode(AVLNode*& node);
+	void updateHeight(AVLNode*& node);
+	void updateAllHeights();
+	size_t getBalanceFactor(AVLNode*& node);
 
 	/* Recursive helper methods */
 	size_t height(AVLNode* current) const;
