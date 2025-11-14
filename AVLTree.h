@@ -16,7 +16,7 @@ public:
 	~AVLTree();
 
 	AVLTree(const AVLTree& other);
-	size_t& operator[](const string& key);
+	size_t& operator[](const std::string& key);
 	void operator=(const AVLTree& other);
     using KeyType = std::string;
     using ValueType = size_t;
@@ -63,10 +63,11 @@ protected:
 
     private:
     AVLNode* root;
+	AVLNode* getRoot() const;
 	/* Methods for rebalancing */
 	void balanceNode(AVLNode*& node);
 	void updateHeight(AVLNode*& node);
-	void updateAllHeights();
+	// void updateAllHeights();
 	size_t getBalanceFactor(AVLNode*& node);
 	AVLNode* rotateLeft(AVLNode*& node);
 	AVLNode* rotateRight(AVLNode*& node);
@@ -79,6 +80,10 @@ protected:
 	bool insertNode(string& key, size_t value, AVLNode*& current);
 	bool remove(AVLNode*& current, KeyType key, size_t value);
     bool removeNode(AVLNode*& current);
+	optional<size_t> get(const string& key, AVLNode* current) const;
+	void destroy(AVLNode*& current);
+	void createDeepCopy(AVLNode* current);
+	AVLNode* getNodeRef(const string& key, AVLNode* current);
 
 
 };
