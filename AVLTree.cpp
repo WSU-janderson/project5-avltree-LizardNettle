@@ -163,8 +163,33 @@ void AVLTree::balanceNode(AVLNode *&node) {
 	}
 }
 
+/**
+ * Updates the height of a node by checking the height of the right and left subtree.
+ * Requires the height of left and right to be accurate
+ * @param node the node being updated
+ */
 void AVLTree::updateHeight(AVLNode*& node) {
-	return;
+	if (!node) return;
+
+	// get heights of both subtrees, set to -1 if null.
+	int leftHeight, rightHeight, height;
+
+	if (node->left != nullptr) {
+		leftHeight = node->left->getHeight();
+	}
+	else {leftHeight = -1;}
+
+	if (node->right != nullptr) {
+		rightHeight = node->right->getHeight();
+	}
+	else {rightHeight = -1;}
+
+	// check which subtree is larger, use the largest to calculate height.
+	if (rightHeight >= leftHeight) {
+		height = rightHeight + 1;
+	} else {
+		height = leftHeight + 1;
+	}
 }
 
 void AVLTree::updateAllHeights() {
@@ -172,40 +197,63 @@ void AVLTree::updateAllHeights() {
 }
 
 size_t AVLTree::getBalanceFactor(AVLNode*& node) {
-	return static_cast<size_t>(node->getLeft()->getNodeHeight() - node->getRight()->getNodeHeight());
+	if (!node) return 0;
+
+	// get heights of both subtrees, set to -1 if null.
+	int leftHeight, rightHeight;
+
+	if (node->left != nullptr) {
+		leftHeight = node->left->getHeight();
+	} else {leftHeight = -1;}
+
+	if (node->right != nullptr) {
+		rightHeight = node->right->getHeight();
+	} else {rightHeight = -1;}
+
+	return leftHeight - rightHeight;
 }
 
 AVLTree::AVLNode* AVLTree::rotateRight(AVLNode *&node) {
 	// get right node and left node of right node
 	// then perform rotation
-	AVLNode *left = node->getLeft();
-	AVLNode *right = node->getRight();
+	AVLNode *left = node->left;
+	AVLNode *subtree = node->getRight();
 
-	node->getRight() = left;
-	right->getLeft() = right;
-	return left;
+	node->right = node;
+	node->left = subtree;
+
+	updateHeight(node);
+	updateHeight(left);
+
+	node = left;
+	return node;
 }
 
 AVLTree::AVLNode* AVLTree::rotateLeft(AVLNode *&node) {
 	// get right node and left node of right node
 	// then perform rotation
-	AVLNode *right = node->getRight();
-	AVLNode *subTree2 = right->getLeft();
+	AVLNode *right = node->right;
+	AVLNode *subTree = right->left;
 
-	right->getLeft() = node;
-	node->getRight() = subTree2;
-	return right;
+	right->left = node;
+	node->right = subTree;
+
+	updateHeight(node);
+	updateHeight(right);
+
+	node = right;
+	return node;
 }
 
 AVLTree::AVLNode* AVLTree::rotateLeftRight(AVLNode *&node) {
 	// left rotate node->left, then right rotate node
-	node->getLeft() = rotateLeft(node->getLeft());
+	rotateLeft(node->left);
 	return rotateRight(node);
 }
 
 AVLTree::AVLNode* AVLTree::rotateRightLeft(AVLNode *&node) {
 	// right rotate node->right, then left rotate node
-	node->getRight() = rotateRight(node->getRight());
+	rotateRight(node->right);
 	return rotateLeft(node);
 }
 
