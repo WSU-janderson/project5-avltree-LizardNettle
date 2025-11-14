@@ -145,20 +145,20 @@ void AVLTree::balanceNode(AVLNode *&node) {
 	if (balanceFactor > 1) {
 		// left-left (single rotation)
 		if ((node->getLeft()->getLeft()->getNodeHeight()) >= (node->getLeft()->getRight()->getNodeHeight())) {
-			// rotateRight(node);
+			rotateRight(node);
 		}
 		else { // Left-right (double rotation)
-			// rotateLeftRight(node);
+			rotateLeftRight(node);
 		}
 	}
 	// BALANCE FACTOR < -1: Left heavy //
 	if (balanceFactor < -1) {
 		// right-right (single rotation)
 		if (node->getRight()->getRight()->getHeight() >= (node->getRight()->getLeft()->getHeight())) {
-			// rotateLeft(node);
+			rotateLeft(node);
 		}
 		else { // right-left (double rotation)
-			// rotateLeftRight(node);
+			rotateLeftRight(node);
 		}
 	}
 }
@@ -167,8 +167,46 @@ void AVLTree::updateHeight(AVLNode*& node) {
 	return;
 }
 
+void AVLTree::updateAllHeights() {
+
+}
+
 size_t AVLTree::getBalanceFactor(AVLNode*& node) {
 	return static_cast<size_t>(node->getLeft()->getNodeHeight() - node->getRight()->getNodeHeight());
+}
+
+AVLTree::AVLNode* AVLTree::rotateRight(AVLNode *&node) {
+	// get right node and left node of right node
+	// then perform rotation
+	AVLNode *left = node->getLeft();
+	AVLNode *right = node->getRight();
+
+	node->getRight() = left;
+	right->getLeft() = right;
+	return left;
+}
+
+AVLTree::AVLNode* AVLTree::rotateLeft(AVLNode *&node) {
+	// get right node and left node of right node
+	// then perform rotation
+	AVLNode *right = node->getRight();
+	AVLNode *subTree2 = right->getLeft();
+
+	right->getLeft() = node;
+	node->getRight() = subTree2;
+	return right;
+}
+
+AVLTree::AVLNode* AVLTree::rotateLeftRight(AVLNode *&node) {
+	// left rotate node->left, then right rotate node
+	node->getLeft() = rotateLeft(node->getLeft());
+	return rotateRight(node);
+}
+
+AVLTree::AVLNode* AVLTree::rotateRightLeft(AVLNode *&node) {
+	// right rotate node->right, then left rotate node
+	node->getRight() = rotateRight(node->getRight());
+	return rotateLeft(node);
 }
 
 
