@@ -89,10 +89,25 @@ bool AVLTree::remove(const std::string& key) {
 }
 
 bool AVLTree::contains(const string& key) const {
-
+	return containsRecursive(root, key);
 }
 
 bool AVLTree::containsRecursive(AVLNode* current, const string& key) const {
+	// BASE CASE: if null, key not in tree
+	if (current == nullptr) {
+		return false;
+	}
+	// visit current
+	if (current->getKey() == key) {
+		return true;
+	}
+	// recurse left, then right
+	if (containsRecursive(current->left, key)) {
+		return true;
+	}
+	if (containsRecursive(current->right, key)) {
+		return true;
+	}
 }
 
 /**
@@ -158,7 +173,7 @@ void AVLTree::printTree(ostream& os, AVLNode* current, size_t depth) const {
 	os << "{" << current->getKey() << ": " << current->getValue() << "}" << std::endl;
 
 	// recurse down left subtree
-	printTree(os, current->right, depth + 1);
+	printTree(os, current->left, depth + 1);
 }
 
 /*
@@ -205,6 +220,10 @@ std::string AVLTree::AVLNode::getKey() {
 
 size_t AVLTree::AVLNode::getValue() {
 	return this->value;
+}
+
+size_t AVLTree::AVLNode::getHeight() {
+	return this->height;
 }
 
 size_t &AVLTree::AVLNode::getValueRef() {

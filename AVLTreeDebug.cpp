@@ -9,17 +9,19 @@ instead for you to get an idea of how to test the tree
 #include <ranges>
 #include <vector>
 using namespace std;
+#include "AVLTree.h"
 
 
 int main() {
     // AVLTree tree;
-    // bool insertResult;
-    // insertResult = tree.insert("F", 'F');
-    // insertResult = tree.insert("F", 'F'); // false, no duplicates allowed
-    // insertResult = tree.insert("K", 'K');
-    // insertResult = tree.insert("X", 'X');// single rotate left
-    // cout << endl << endl;
-    // cout << tree << endl;
+    bool insertResult;
+	AVLTree tree;
+    insertResult = tree.insert("F", 'F');
+    insertResult = tree.insert("F", 'F'); // false, no duplicates allowed
+    insertResult = tree.insert("K", 'K');
+    insertResult = tree.insert("X", 'X');// single rotate left
+    cout << endl << endl;
+    cout << tree << endl;
     //
     // insertResult = tree.insert("C", 'C');
     // insertResult = tree.insert("A", 'A'); // single rotate right

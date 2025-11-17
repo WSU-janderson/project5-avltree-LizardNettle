@@ -55,6 +55,7 @@ protected:
 		AVLNode *&getLeft();
 		AVLNode *&getRight();
     	int getNodeHeight();
+    	size_t getHeight();
     	int getBalance();
     	int getNumChildren();
     	bool isLeaf();
