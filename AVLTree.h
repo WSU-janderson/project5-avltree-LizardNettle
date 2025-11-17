@@ -77,6 +77,7 @@ protected:
 	/* Recursive helper methods */
 	size_t height(AVLNode* current) const;
 	size_t inorderTraversal(AVLNode*& current);
+	void printTree(ostream& os, AVLNode* current, size_t depth) const;
 	bool insertNode(string& key, size_t value, AVLNode*& current);
 	bool remove(AVLNode*& current, KeyType key, size_t value);
     bool removeNode(AVLNode*& current);

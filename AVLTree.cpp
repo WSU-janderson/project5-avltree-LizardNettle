@@ -14,36 +14,6 @@
 AVLTree::AVLTree() : root(nullptr) {}
 
 /**
- * Recursively creates a deep copy of an AVLTree.
- *
- * @param other the AVLTree being copied
- */
-AVLTree::AVLTree(const AVLTree& other) : root(nullptr) {
-	createDeepCopy(other.getRoot());
-}
-
-/**
- * Recursive helper method of the deep copy constructor. Uses pre-order traversal.
- * @param current current node being copied
- */
-void AVLTree::createDeepCopy(AVLNode *current) {
-	if (current == nullptr) {
-		return;
-	}
-	// insert current
-	insert(current->getKey(), current->getValue());
-	// recurse left, then right
-	createDeepCopy(current->left);
-	createDeepCopy(current->right);
-}
-
-
-AVLTree::AVLNode *AVLTree::getRoot() const {
-	return root;
-}
-
-
-/**
  * Recursively destroys all key-pair values in the AVLTree and resets root.
  */
 AVLTree::~AVLTree() {
@@ -52,17 +22,14 @@ AVLTree::~AVLTree() {
 }
 
 /**
- * Recursive helper method of ~AVLTree. Destroys all nodes
- * in the tree using postorder traversal.
- * @param current the current node being destroyed
+ * Recursively creates a deep copy of an AVLTree.
+ *
+ * @param other the AVLTree being copied
  */
-void AVLTree::destroy(AVLNode *&current) {
-	if (current == nullptr) return;
-	// go down subtrees before destroying node
-	destroy(current->left);
-	destroy(current->right);
-	delete current;
+AVLTree::AVLTree(const AVLTree& other) : root(nullptr) {
+	createDeepCopy(other.getRoot());
 }
+
 
 size_t& AVLTree::operator[](const std::string& key) {
 	AVLNode* node = getNodeRef(key, root);
@@ -73,33 +40,11 @@ size_t& AVLTree::operator[](const std::string& key) {
 	return zero;
 }
 
-/**
- * Recursive helper method for operator[].
- * @param key the key being searched for
- * @param current the current node being checked
- * @return returns the node associated with the key if it is found, returns nullptr otherwise.
- */
-AVLTree::AVLNode* AVLTree::getNodeRef(const string& key, AVLNode* current) {
-	// BASE CASE 1: nullptr, key not in tree //
-	if (current == nullptr) {
-		return nullptr;
-	}
-	// recurse left
-	AVLNode* result = getNodeRef(key, current->left);
-	if (result != nullptr) return result;
 
-	// BASE CASE 2: key found, return //
-	if (current->getKey() == key) {
-		return current;
-	}
-	// recurse right
-	result = getNodeRef(key, current->right);
-	if (result != nullptr) return result;
-	return nullptr;
-}}
+void AVLTree::operator=(const AVLTree& other) {
+	vector<string> allKeys = keys();
 
-void AVLTree::operator=(const AVLTree& other) {}
-
+}
 
 /**
  * Insert a new key-value pair into the tree. After a successful insert, the tree is rebalanced if necessary.
@@ -121,6 +66,307 @@ bool AVLTree::insert(const std::string& key, size_t value) {
 		return true;
 	}
 	return false;
+}
+
+/**
+ * If the key is in the tree, remove() will delete the key-value pair from the tree. The memory allocated
+ * for the node that is removed will be released. After removing the key-value pair, the tree is
+ * rebalanced if necessary.
+ *
+ * @param key the key being removed from the AVLTree
+ * @return returns true if the key was found and removed, returns false otherwise.
+ */
+bool AVLTree::remove(const std::string& key) {
+	// variables //
+	std::string nonConstKey = key;
+	std::optional<size_t> value = get(key);
+
+	// if a value associated with the key can be found, try to remove.
+	if (value.has_value()) {
+		return (remove(root, nonConstKey, value.value()));
+	}
+	return false;
+}
+
+bool AVLTree::contains(const string& key) const {
+
+}
+
+/**
+ * Recursively searches for the value associated with the given key.
+ * @param key the key associated with the return value.
+ * @return returns the value associated with the key, if it is in the tree, otherwise returns null.
+ */
+std::optional<size_t> AVLTree::get(const string& key) const {
+	return get(key, root);
+}
+
+
+vector<std::string> AVLTree::findRange(const std::string& lowKey, const std::string& highKey) const {}
+
+vector<std::string> AVLTree::keys() const {
+
+}
+
+size_t AVLTree::size() const {}
+/**
+ * Checks the height of the AVLTree by checking the left and right subtrees of root
+ * recursively and returning the higher value
+ * @return returns the height of the AVLTree
+ */
+size_t AVLTree::getHeight() const {
+	return height(root);
+}
+
+std::ostream& operator<<(ostream& os, const AVLTree& AVLTree) {
+	AVLTree.printTree(os, AVLTree.root, 0);
+}
+
+void AVLTree::printTree(ostream& os, AVLNode* current, size_t depth) const {
+	// BASE CASE: no more to print down this subtree if current == nullptr.
+	if (current == nullptr) {
+		return;
+	}
+	// recurse down right subtree
+	printTree(os, current->right, depth + 1);
+
+	// print current
+	for (int i = 0; i < depth; i++) {
+		os << "    ";
+	}
+	// print: {KEY: val} \n
+	os << "{" << current->getKey() << ": " << current->getValue() << "}" << std::endl;
+
+	// recurse down left subtree
+	printTree(os, current->right, depth + 1);
+}
+
+/*
+=================
+= AVLNode Class =
+= ------------- =================================================
+= The AVLNode class defines the nodes which make up an AVLTree. =
+================================================================= */
+AVLTree::AVLNode::AVLNode() {
+	this->key = "";
+	this->value = 0;
+	this->left = nullptr;
+	this->right = nullptr;
+	height = 0;
+}
+
+AVLTree::AVLNode::AVLNode(std::string &key, size_t value) {
+	this->key = key;
+	this->value = value;
+	this->left = nullptr;
+	this->right = nullptr;
+	height = 0;
+}
+
+void AVLTree::AVLNode::load(std::string &key, size_t value) {
+	this->key = key;
+	this->value = value;
+}
+AVLTree::AVLNode* AVLTree::AVLNode::insertRight(AVLNode* rightChild) {
+	this->right = rightChild;
+}
+AVLTree::AVLNode* AVLTree::AVLNode::insertLeft(AVLNode* leftChild) {
+	this->right = leftChild;
+}
+
+void AVLTree::AVLNode::setHeight(int height) {
+	this->height = height;
+}
+
+// ACCESSORS //
+std::string AVLTree::AVLNode::getKey() {
+	return this->key;
+}
+
+size_t AVLTree::AVLNode::getValue() {
+	return this->value;
+}
+
+size_t &AVLTree::AVLNode::getValueRef() {
+	return this->value;
+}
+
+AVLTree::AVLNode *&AVLTree::AVLNode::getLeft() {
+	return this->left;
+}
+
+AVLTree::AVLNode *&AVLTree::AVLNode::getRight() {
+	return this->right;
+}
+
+int AVLTree::AVLNode::getNodeHeight() {
+	return this->height;
+}
+
+/**
+ * @return returns the number of children the AVLNode has (always 0, 1, or 2)
+ */
+int AVLTree::AVLNode::getNumChildren() {
+	if (this->left != nullptr && this->right != nullptr) {
+		return 2;
+	}
+	if (this->left != nullptr || this->right != nullptr) {
+		return 1;
+	}
+	return 0;
+}
+
+bool AVLTree::AVLNode::isLeaf() {
+	return this->left == nullptr && this->right == nullptr;
+}
+
+AVLTree::AVLNode *AVLTree::getRoot() const {
+	return root;
+}
+
+
+/**
+ * Checks the balance of node, and performs necessary rotations if
+ * the balance factor is less than -1, or greater than 1.
+ * @param node the node being balanced.
+ */
+void AVLTree::balanceNode(AVLNode *&node) {
+	// Update height of Node and calculate balance factor. Abort if !node.
+	if (!node) return;
+	updateHeight(node);
+	size_t balanceFactor = getBalanceFactor(node);
+
+	// BALANCE FACTOR > 1: Left heavy  //
+	if (balanceFactor > 1) {
+		// left-left (single rotation)
+		if ((node->getLeft()->getLeft()->getNodeHeight()) >= (node->getLeft()->getRight()->getNodeHeight())) {
+			rotateRight(node);
+		}
+		else { // Left-right (double rotation)
+			rotateLeftRight(node);
+		}
+	}
+	// BALANCE FACTOR < -1: Left heavy //
+	if (balanceFactor < -1) {
+		// right-right (single rotation)
+		if (node->getRight()->getRight()->getHeight() >= (node->getRight()->getLeft()->getHeight())) {
+			rotateLeft(node);
+		}
+		else { // right-left (double rotation)
+			rotateLeftRight(node);
+		}
+	}
+}
+
+
+/**
+ * Updates the height of a node by checking the height of the right and left subtree.
+ * Requires the height of left and right to be accurate
+ * @param node the node being updated
+ */
+void AVLTree::updateHeight(AVLNode*& node) {
+	if (!node) return;
+
+	// get heights of both subtrees, set to -1 if null.
+	int leftHeight, rightHeight, height;
+
+	if (node->left != nullptr) {
+		leftHeight = node->left->getHeight();
+	}
+	else {leftHeight = -1;}
+
+	if (node->right != nullptr) {
+		rightHeight = node->right->getHeight();
+	}
+	else {rightHeight = -1;}
+
+	// check which subtree is larger, use the largest to calculate height.
+	if (rightHeight >= leftHeight) {
+		height = rightHeight + 1;
+	} else {
+		height = leftHeight + 1;
+	}
+}
+size_t AVLTree::getBalanceFactor(AVLNode*& node) {
+	if (!node) return 0;
+
+	// get heights of both subtrees, set to -1 if null.
+	int leftHeight, rightHeight;
+
+	if (node->left != nullptr) {
+		leftHeight = node->left->getHeight();
+	} else {leftHeight = -1;}
+
+	if (node->right != nullptr) {
+		rightHeight = node->right->getHeight();
+	} else {rightHeight = -1;}
+
+	return leftHeight - rightHeight;
+}
+
+AVLTree::AVLNode* AVLTree::rotateLeft(AVLNode *&node) {
+	// get right node and left node of right node
+	// then perform rotation
+	AVLNode *right = node->right;
+	AVLNode *subTree = right->left;
+
+	right->left = node;
+	node->right = subTree;
+
+	updateHeight(node);
+	updateHeight(right);
+
+	node = right;
+	return node;
+}
+
+AVLTree::AVLNode* AVLTree::rotateRight(AVLNode *&node) {
+	// get right node and left node of right node
+	// then perform rotation
+	AVLNode *left = node->left;
+	AVLNode *subtree = node->getRight();
+
+	node->right = node;
+	node->left = subtree;
+
+	updateHeight(node);
+	updateHeight(left);
+
+	node = left;
+	return node;
+}
+
+AVLTree::AVLNode* AVLTree::rotateLeftRight(AVLNode *&node) {
+	// left rotate node->left, then right rotate node
+	rotateLeft(node->left);
+	return rotateRight(node);
+}
+
+AVLTree::AVLNode* AVLTree::rotateRightLeft(AVLNode *&node) {
+	// right rotate node->right, then left rotate node
+	rotateRight(node->right);
+	return rotateLeft(node);
+}
+
+
+/**
+ * recursively gets the height of both subtrees via inorder traversal.
+ *
+ * @param current the current node being visited
+ * @return returns the height of the AVLTree.
+ */
+size_t AVLTree::height(AVLNode* current) const {
+	// BASE CASE: if nullptr, return empty list
+	if (current == nullptr) {
+		return 0;
+	}
+	// get the height of both subtrees, and return 1 + the larger subtree as the height
+	size_t leftHeight = height(current->left);
+	size_t rightHeight = height(current->right);
+	if (leftHeight > rightHeight) {
+		return 1 + leftHeight;
+	}
+	return 1 + rightHeight;
 }
 
 /**
@@ -164,25 +410,6 @@ bool AVLTree::insertNode(std::string& key, size_t val, AVLNode *&current) {
 	return false;
 }
 
-/**
- * If the key is in the tree, remove() will delete the key-value pair from the tree. The memory allocated
- * for the node that is removed will be released. After removing the key-value pair, the tree is
- * rebalanced if necessary.
- *
- * @param key the key being removed from the AVLTree
- * @return returns true if the key was found and removed, returns false otherwise.
- */
-bool AVLTree::remove(const std::string& key) {
-	// variables //
-	std::string nonConstKey = key;
-	std::optional<size_t> value = get(key);
-
-	// if a value associated with the key can be found, try to remove.
-	if (value.has_value()) {
-		return (remove(root, nonConstKey, value.value()));
-	}
-	return false;
-}
 /**
  * recursive and overloaded helper method of remove.
  *
@@ -229,50 +456,52 @@ bool AVLTree::remove(AVLNode *&current, KeyType key, size_t value) {
 	return true;
 }
 
-bool AVLTree::contains(const string& key) const {
-
-}
-
 /**
- * Recursively searches for the value associated with the given key.
- * @param key the key associated with the return value.
- * @return returns the value associated with the key, if it is in the tree, otherwise returns null.
- */
-std::optional<size_t> AVLTree::get(const string& key) const {
-	return get(key, root);
-}
-
-vector<std::string> AVLTree::findRange(const std::string& lowKey, const std::string& highKey) const {}
-vector<std::string> AVLTree::keys() const {}
-size_t AVLTree::size() const {}
-
-/**
- * Checks the height of the AVLTree by checking the left and right subtrees of root
- * recursively and returning the higher value
- * @return returns the height of the AVLTree
- */
-size_t AVLTree::getHeight() const {
-	return height(root);
-}
-
-/**
- * recursively gets the height of both subtrees via inorder traversal.
+ * removeNode is a helper method for remove which contains all logic for  removing the nodes.
  *
- * @param current the current node being visited
- * @return returns the height of the AVLTree.
+ * @param current the node being removed
+ * @return returns true if current was removed, returns false otherwise.
  */
-size_t AVLTree::height(AVLNode* current) const {
-	// BASE CASE: if nullptr, return empty list
-	if (current == nullptr) {
-		return 0;
+bool AVLTree::removeNode(AVLNode*& current){
+	if (!current) {
+		return false;
 	}
-	// get the height of both subtrees, and return 1 + the larger subtree as the height
-	size_t leftHeight = height(current->left);
-	size_t rightHeight = height(current->right);
-	if (leftHeight > rightHeight) {
-		return 1 + leftHeight;
+
+	AVLNode* toDelete = current;
+	// auto nChildren = current->getNumChildren();
+	if (current->isLeaf()) {
+		// CASE 1 - Leaf - we can delete the node.
+		current = nullptr;
+	} else if (current->getNumChildren() == 1) {
+		// CASE 1 - One child - replace current with its only child
+		if (current->right) {
+			current = current->right;
+		} else {
+			current = current->left;
+		}
+	} else {
+		// CASE 3 - Two children
+		// get the smallest key in the right subtree
+		AVLNode* smallestInRight = current->right;
+
+		while (smallestInRight->left) {
+			smallestInRight = smallestInRight->left;
+		}
+		std::string newKey = smallestInRight->key;
+		int newValue = smallestInRight->value;
+		remove(root, smallestInRight->key, smallestInRight->value); // delete this one
+
+		current->key = newKey;
+		current->value = newValue;
+
+		current->height = current->getHeight();
+		balanceNode(current);
+
+		return true; // we already deleted the one we needed to so return
 	}
-	return 1 + rightHeight;
+	delete toDelete;
+
+	return true;
 }
 
 /**
@@ -305,254 +534,54 @@ std::optional<size_t> AVLTree::get(const string& key, AVLNode* current) const {
 }
 
 /**
- * Checks the balance of node, and performs necessary rotations if
- * the balance factor is less than -1, or greater than 1.
- * @param node the node being balanced.
+ * Recursive helper method of ~AVLTree. Destroys all nodes
+ * in the tree using postorder traversal.
+ * @param current the current node being destroyed
  */
-void AVLTree::balanceNode(AVLNode *&node) {
-	// Update height of Node and calculate balance factor. Abort if !node.
-	if (!node) return;
-	updateHeight(node);
-	size_t balanceFactor = getBalanceFactor(node);
-
-	// BALANCE FACTOR > 1: Left heavy  //
-	if (balanceFactor > 1) {
-		// left-left (single rotation)
-		if ((node->getLeft()->getLeft()->getNodeHeight()) >= (node->getLeft()->getRight()->getNodeHeight())) {
-			rotateRight(node);
-		}
-		else { // Left-right (double rotation)
-			rotateLeftRight(node);
-		}
-	}
-	// BALANCE FACTOR < -1: Left heavy //
-	if (balanceFactor < -1) {
-		// right-right (single rotation)
-		if (node->getRight()->getRight()->getHeight() >= (node->getRight()->getLeft()->getHeight())) {
-			rotateLeft(node);
-		}
-		else { // right-left (double rotation)
-			rotateLeftRight(node);
-		}
-	}
+void AVLTree::destroy(AVLNode *&current) {
+	if (current == nullptr) return;
+	// go down subtrees before destroying node
+	destroy(current->left);
+	destroy(current->right);
+	delete current;
 }
 
 /**
- * Updates the height of a node by checking the height of the right and left subtree.
- * Requires the height of left and right to be accurate
- * @param node the node being updated
+ * Recursive helper method of the deep copy constructor. Uses pre-order traversal.
+ * @param current current node being copied
  */
-void AVLTree::updateHeight(AVLNode*& node) {
-	if (!node) return;
-
-	// get heights of both subtrees, set to -1 if null.
-	int leftHeight, rightHeight, height;
-
-	if (node->left != nullptr) {
-		leftHeight = node->left->getHeight();
+void AVLTree::createDeepCopy(AVLNode *current) {
+	if (current == nullptr) {
+		return;
 	}
-	else {leftHeight = -1;}
-
-	if (node->right != nullptr) {
-		rightHeight = node->right->getHeight();
-	}
-	else {rightHeight = -1;}
-
-	// check which subtree is larger, use the largest to calculate height.
-	if (rightHeight >= leftHeight) {
-		height = rightHeight + 1;
-	} else {
-		height = leftHeight + 1;
-	}
-}
-
-size_t AVLTree::getBalanceFactor(AVLNode*& node) {
-	if (!node) return 0;
-
-	// get heights of both subtrees, set to -1 if null.
-	int leftHeight, rightHeight;
-
-	if (node->left != nullptr) {
-		leftHeight = node->left->getHeight();
-	} else {leftHeight = -1;}
-
-	if (node->right != nullptr) {
-		rightHeight = node->right->getHeight();
-	} else {rightHeight = -1;}
-
-	return leftHeight - rightHeight;
-}
-
-AVLTree::AVLNode* AVLTree::rotateRight(AVLNode *&node) {
-	// get right node and left node of right node
-	// then perform rotation
-	AVLNode *left = node->left;
-	AVLNode *subtree = node->getRight();
-
-	node->right = node;
-	node->left = subtree;
-
-	updateHeight(node);
-	updateHeight(left);
-
-	node = left;
-	return node;
-}
-
-AVLTree::AVLNode* AVLTree::rotateLeft(AVLNode *&node) {
-	// get right node and left node of right node
-	// then perform rotation
-	AVLNode *right = node->right;
-	AVLNode *subTree = right->left;
-
-	right->left = node;
-	node->right = subTree;
-
-	updateHeight(node);
-	updateHeight(right);
-
-	node = right;
-	return node;
-}
-
-AVLTree::AVLNode* AVLTree::rotateLeftRight(AVLNode *&node) {
-	// left rotate node->left, then right rotate node
-	rotateLeft(node->left);
-	return rotateRight(node);
-}
-
-AVLTree::AVLNode* AVLTree::rotateRightLeft(AVLNode *&node) {
-	// right rotate node->right, then left rotate node
-	rotateRight(node->right);
-	return rotateLeft(node);
-}
-
-
-/**
- * removeNode is a helper method for remove which contains all logic for  removing the nodes.
- *
- * @param current the node being removed
- * @return returns true if current was removed, returns false otherwise.
- */
-bool AVLTree::removeNode(AVLNode*& current){
-    if (!current) {
-        return false;
-    }
-
-    AVLNode* toDelete = current;
-    // auto nChildren = current->getNumChildren();
-    if (current->isLeaf()) {
-        // CASE 1 - Leaf - we can delete the node.
-        current = nullptr;
-    } else if (current->getNumChildren() == 1) {
-        // CASE 1 - One child - replace current with its only child
-        if (current->right) {
-            current = current->right;
-        } else {
-            current = current->left;
-        }
-    } else {
-        // CASE 3 - Two children
-        // get the smallest key in the right subtree
-        AVLNode* smallestInRight = current->right;
-
-        while (smallestInRight->left) {
-            smallestInRight = smallestInRight->left;
-        }
-        std::string newKey = smallestInRight->key;
-        int newValue = smallestInRight->value;
-        remove(root, smallestInRight->key, smallestInRight->value); // delete this one
-
-        current->key = newKey;
-        current->value = newValue;
-
-        current->height = current->getHeight();
-        balanceNode(current);
-
-        return true; // we already deleted the one we needed to so return
-    }
-    delete toDelete;
-
-    return true;
-}
-
-/*
-=================
-= AVLNode Class =
-= ------------- =================================================
-= The AVLNode class defines the nodes which make up an AVLTree. =
-================================================================= */
-AVLTree::AVLNode::AVLNode() {
-	this->key = "";
-	this->value = 0;
-	this->left = nullptr;
-	this->right = nullptr;
-	height = 0;
-}
-AVLTree::AVLNode::AVLNode(std::string &key, size_t value) {
-	this->key = key;
-	this->value = value;
-	this->left = nullptr;
-	this->right = nullptr;
-	height = 0;
-}
-
-void AVLTree::AVLNode::load(std::string &key, size_t value) {
-	this->key = key;
-	this->value = value;
-}
-
-AVLTree::AVLNode* AVLTree::AVLNode::insertRight(AVLNode* rightChild) {
-	this->right = rightChild;
-}
-
-AVLTree::AVLNode* AVLTree::AVLNode::insertLeft(AVLNode* leftChild) {
-	this->right = leftChild;
-}
-
-void AVLTree::AVLNode::setHeight(int height) {
-	this->height = height;
-}
-
-
-// ACCESSORS //
-std::string AVLTree::AVLNode::getKey() {
-	return this->key;
-}
-
-size_t AVLTree::AVLNode::getValue() {
-	return this->value;
-}
-
-size_t &AVLTree::AVLNode::getValueRef() {
-	return this->value;
-}
-
-AVLTree::AVLNode *&AVLTree::AVLNode::getLeft() {
-	return this->left;
-}
-
-AVLTree::AVLNode *&AVLTree::AVLNode::getRight() {
-	return this->right;
-}
-
-int AVLTree::AVLNode::getNodeHeight() {
-	return this->height;
+	// insert current
+	insert(current->getKey(), current->getValue());
+	// recurse left, then right
+	createDeepCopy(current->left);
+	createDeepCopy(current->right);
 }
 
 /**
- * @return returns the number of children the AVLNode has (always 0, 1, or 2)
+ * Recursive helper method for operator[].
+ * @param key the key being searched for
+ * @param current the current node being checked
+ * @return returns the node associated with the key if it is found, returns nullptr otherwise.
  */
-int AVLTree::AVLNode::getNumChildren() {
-	if (this->left != nullptr && this->right != nullptr) {
-		return 2;
+AVLTree::AVLNode* AVLTree::getNodeRef(const string& key, AVLNode* current) {
+	// BASE CASE 1: nullptr, key not in tree //
+	if (current == nullptr) {
+		return nullptr;
 	}
-	if (this->left != nullptr || this->right != nullptr) {
-		return 1;
-	}
-	return 0;
-}
+	// recurse left
+	AVLNode* result = getNodeRef(key, current->left);
+	if (result != nullptr) return result;
 
-bool AVLTree::AVLNode::isLeaf() {
-	return this->left == nullptr && this->right == nullptr;
+	// BASE CASE 2: key found, return //
+	if (current->getKey() == key) {
+		return current;
+	}
+	// recurse right
+	result = getNodeRef(key, current->right);
+	if (result != nullptr) return result;
+	return nullptr;
 }
