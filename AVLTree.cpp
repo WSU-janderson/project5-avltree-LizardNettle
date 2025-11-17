@@ -5,6 +5,8 @@
  */
 
 #include "AVLTree.h"
+
+#include <charconv>
 #include <optional>
 #include <ios>
 #include <iostream>
@@ -42,8 +44,6 @@ size_t& AVLTree::operator[](const std::string& key) {
 
 
 void AVLTree::operator=(const AVLTree& other) {
-	vector<string> allKeys = keys();
-
 }
 
 /**
@@ -92,6 +92,9 @@ bool AVLTree::contains(const string& key) const {
 
 }
 
+bool AVLTree::containsRecursive(AVLNode* current, const string& key) const {
+}
+
 /**
  * Recursively searches for the value associated with the given key.
  * @param key the key associated with the return value.
@@ -105,7 +108,24 @@ std::optional<size_t> AVLTree::get(const string& key) const {
 vector<std::string> AVLTree::findRange(const std::string& lowKey, const std::string& highKey) const {}
 
 vector<std::string> AVLTree::keys() const {
+	vector<string> keys;
+	keys = getAllKeys(root, keys);
+	return keys;
+}
 
+vector<std::string> AVLTree::getAllKeys(AVLNode* current, vector<string>& keys) const {
+	// BASE CASE: nullptr, no more nodes on this branch.
+	if (current == nullptr) {
+		return keys;
+	}
+	// recurse left
+	getAllKeys(current->left, keys);
+
+	// get current key
+	keys.push_back(current->getKey());
+
+	// recurse right
+	getAllKeys(current->right, keys);
 }
 
 size_t AVLTree::size() const {}

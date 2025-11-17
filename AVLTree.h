@@ -85,6 +85,8 @@ protected:
 	void destroy(AVLNode*& current);
 	void createDeepCopy(AVLNode* current);
 	AVLNode* getNodeRef(const string& key, AVLNode* current);
+	vector<string> getAllKeys(AVLNode* current, vector<string>& keys) const;
+	bool containsRecursive(AVLNode* current, const string& key) const;
 
 
 };
