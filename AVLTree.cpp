@@ -353,7 +353,6 @@ void AVLTree::updateHeight(AVLNode*& node) {
 	} else {
 		height = leftHeight + 1;
 	}
-	// set final height
 	node->setHeight(height);
 }
 int AVLTree::getBalanceFactor(AVLNode*& node) {
