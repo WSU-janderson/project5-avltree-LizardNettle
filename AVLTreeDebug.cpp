@@ -10,20 +10,27 @@ instead for you to get an idea of how to test the tree
 #include <vector>
 using namespace std;
 #include "AVLTree.h"
+#include <iostream>
 
 
 int main() {
     // AVLTree tree;
     bool insertResult;
 	AVLTree tree;
-    insertResult = tree.insert("F", 'F');
-    insertResult = tree.insert("F", 'F'); // false, no duplicates allowed
-    insertResult = tree.insert("K", 'K');
-    insertResult = tree.insert("X", 'X');// single rotate left
-    cout << endl << endl;
-    cout << tree << endl;
-    //
-    // insertResult = tree.insert("C", 'C');
+    insertResult = tree.insert("F", 6);
+	cout << "tree.insert(F, 1): " << insertResult << endl;
+    insertResult = tree.insert("F", 6); // false, no duplicates allowed
+	cout << "tree.insert(F, 1): " << insertResult << endl;
+	insertResult = tree.insert("F", 7);
+	cout << "tree.insert(F, 2): " << insertResult << endl;
+    insertResult = tree.insert("K", 5);
+	cout << "tree.insert(K, 5): " << insertResult << endl;
+    insertResult = tree.insert("X", 24);// single rotate left
+	cout << "tree.insert(X, 24) (single rotate left): " << insertResult << endl;
+
+	std::cout << tree;
+
+    // insertResult = tree.insert("C", );
     // insertResult = tree.insert("A", 'A'); // single rotate right
     // cout << endl << endl;
     // cout << tree << endl;

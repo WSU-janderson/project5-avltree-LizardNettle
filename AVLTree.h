@@ -69,7 +69,7 @@ protected:
 	void balanceNode(AVLNode*& node);
 	void updateHeight(AVLNode*& node);
 	// void updateAllHeights();
-	size_t getBalanceFactor(AVLNode*& node);
+	int getBalanceFactor(AVLNode*& node);
 	AVLNode* rotateLeft(AVLNode*& node);
 	AVLNode* rotateRight(AVLNode*& node);
 	AVLNode* rotateLeftRight(AVLNode*& node);

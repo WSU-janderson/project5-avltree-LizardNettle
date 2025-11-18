@@ -108,6 +108,7 @@ bool AVLTree::containsRecursive(AVLNode* current, const string& key) const {
 	if (containsRecursive(current->right, key)) {
 		return true;
 	}
+	return false;
 }
 
 /**
@@ -326,7 +327,7 @@ void AVLTree::updateHeight(AVLNode*& node) {
 		height = leftHeight + 1;
 	}
 }
-size_t AVLTree::getBalanceFactor(AVLNode*& node) {
+int AVLTree::getBalanceFactor(AVLNode*& node) {
 	if (!node) return 0;
 
 	// get heights of both subtrees, set to -1 if null.
@@ -456,7 +457,7 @@ bool AVLTree::insertNode(std::string& key, size_t val, AVLNode *&current) {
  * @param key the key of the node being removed.
  * @return returns true if the node was removed, returns false otherwise.
  */
-bool AVLTree::remove(AVLNode *&current, KeyType key, size_t value) {
+bool AVLTree:: remove(AVLNode *&current, KeyType key, size_t value) {
 	// BASE CASE 1: nullptr, key not in tree //
 	if (current == nullptr) {
 		return false;
