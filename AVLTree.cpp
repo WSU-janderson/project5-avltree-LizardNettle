@@ -398,7 +398,7 @@ AVLTree::AVLNode* AVLTree::rotateRight(AVLNode *&node) {
 	// get right node and left node of right node
 	// then perform rotation
 	AVLNode* left = node->left;
-	AVLNode* leftRight = node->getRight();
+	AVLNode* leftRight = node->left->right;
 
 	node->right = node;
 	node->left = leftRight;
