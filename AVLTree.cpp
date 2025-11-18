@@ -142,6 +142,8 @@ vector<std::string> AVLTree::getAllKeys(AVLNode* current, vector<string>& keys) 
 
 	// recurse right
 	getAllKeys(current->right, keys);
+
+	return keys;
 }
 
 size_t AVLTree::size() const {}
@@ -170,7 +172,6 @@ void AVLTree::printTree(ostream& os, AVLNode* current, size_t depth) const {
 	for (int i = 0; i < depth; i++) {
 		os << "    ";
 	}
-	// print: {KEY: val} \n
 	os << "{" << current->getKey() << ": " << current->getValue() << "}" << std::endl;
 
 	// recurse down left subtree
@@ -207,7 +208,7 @@ AVLTree::AVLNode* AVLTree::AVLNode::insertRight(AVLNode* rightChild) {
 	this->right = rightChild;
 }
 AVLTree::AVLNode* AVLTree::AVLNode::insertLeft(AVLNode* leftChild) {
-	this->right = leftChild;
+	this->left = leftChild;
 }
 
 void AVLTree::AVLNode::setHeight(int height) {
@@ -274,26 +275,49 @@ void AVLTree::balanceNode(AVLNode *&node) {
 	// Update height of Node and calculate balance factor. Abort if !node.
 	if (!node) return;
 	updateHeight(node);
-	size_t balanceFactor = getBalanceFactor(node);
+	int balanceFactor = getBalanceFactor(node);
 
-	// BALANCE FACTOR > 1: Left heavy  //
+	// CASE 1: LEFT HEAVY (balanceFactor > 1)
 	if (balanceFactor > 1) {
-		// left-left (single rotation)
-		if ((node->getLeft()->getLeft()->getNodeHeight()) >= (node->getLeft()->getRight()->getNodeHeight())) {
+		// compute heights, and ensure nodes are not nullptr
+		int leftLeftHeight = -1;
+		int leftRightHeight = -1;
+
+		if (node->left != nullptr) {
+			if (node->left->left != nullptr) {
+				leftLeftHeight = node->left->left->getHeight();
+			}
+			if (node->left->right != nullptr) {
+				leftRightHeight = node->left->right->getHeight();
+			}
+		}
+		// LL case
+		if (leftLeftHeight >= leftRightHeight) {
+			rotateRight(node);
+		// LR case
+		} else {
+			rotateLeft(node->left);
 			rotateRight(node);
 		}
-		else { // Left-right (double rotation)
-			rotateLeftRight(node);
-		}
 	}
-	// BALANCE FACTOR < -1: Left heavy //
+
+	// CASE 2: RIGHT HEAVY (balanceFactor < -1).
 	if (balanceFactor < -1) {
-		// right-right (single rotation)
-		if (node->getRight()->getRight()->getHeight() >= (node->getRight()->getLeft()->getHeight())) {
-			rotateLeft(node);
+		//compute height, and ensure nodes are not nullptr
+		size_t rightRightHeight = -1;
+		size_t rightLeftHeight = -1;
+
+		if (node->right != nullptr) {
+			if (node->right->right != nullptr) {
+				rightRightHeight = node->right->right->getHeight();
+			}
+			if (node->right->left != nullptr) {
+				rightLeftHeight = node->right->left->getHeight();
+			}
 		}
-		else { // right-left (double rotation)
-			rotateLeftRight(node);
+		if (rightRightHeight >= rightLeftHeight) {
+			rotateRight(node->right);
+			rotateLeft(node);
 		}
 	}
 }
@@ -308,7 +332,7 @@ void AVLTree::updateHeight(AVLNode*& node) {
 	if (!node) return;
 
 	// get heights of both subtrees, set to -1 if null.
-	int leftHeight, rightHeight, height;
+	size_t leftHeight, rightHeight, height;
 
 	if (node->left != nullptr) {
 		leftHeight = node->left->getHeight();
@@ -331,7 +355,7 @@ int AVLTree::getBalanceFactor(AVLNode*& node) {
 	if (!node) return 0;
 
 	// get heights of both subtrees, set to -1 if null.
-	int leftHeight, rightHeight;
+	size_t leftHeight, rightHeight;
 
 	if (node->left != nullptr) {
 		leftHeight = node->left->getHeight();
