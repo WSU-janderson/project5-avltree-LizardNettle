@@ -285,10 +285,10 @@ void AVLTree::balanceNode(AVLNode *&node) {
 
 		if (node->left != nullptr) {
 			if (node->left->left != nullptr) {
-				leftLeftHeight = node->left->left->getHeight();
+				leftLeftHeight = node->left->left->getHeightInteger();
 			}
 			if (node->left->right != nullptr) {
-				leftRightHeight = node->left->right->getHeight();
+				leftRightHeight = node->left->right->getHeightInteger();
 			}
 		}
 		// LL case
@@ -304,15 +304,15 @@ void AVLTree::balanceNode(AVLNode *&node) {
 	// CASE 2: RIGHT HEAVY (balanceFactor < -1).
 	if (balanceFactor < -1) {
 		//compute height, and ensure nodes are not nullptr
-		size_t rightRightHeight = -1;
-		size_t rightLeftHeight = -1;
+		int rightRightHeight = -1;
+		int rightLeftHeight = -1;
 
 		if (node->right != nullptr) {
 			if (node->right->right != nullptr) {
-				rightRightHeight = node->right->right->getHeight();
+				rightRightHeight = node->right->right->getHeightInteger();
 			}
 			if (node->right->left != nullptr) {
-				rightLeftHeight = node->right->left->getHeight();
+				rightLeftHeight = node->right->left->getHeightInteger();
 			}
 		}
 		if (rightRightHeight >= rightLeftHeight) {
@@ -322,6 +322,9 @@ void AVLTree::balanceNode(AVLNode *&node) {
 	}
 }
 
+int AVLTree::AVLNode::getHeightInteger() {
+	return static_cast<int>(this->getHeight());
+}
 
 /**
  * Updates the height of a node by checking the height of the right and left subtree.
@@ -350,6 +353,7 @@ void AVLTree::updateHeight(AVLNode*& node) {
 	} else {
 		height = leftHeight + 1;
 	}
+	node->setHeight(height);
 }
 int AVLTree::getBalanceFactor(AVLNode*& node) {
 	if (!node) return 0;

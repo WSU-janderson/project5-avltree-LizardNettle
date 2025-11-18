@@ -56,6 +56,7 @@ protected:
 		AVLNode *&getRight();
     	int getNodeHeight();
     	size_t getHeight();
+    	int getHeightInteger();
     	int getBalance();
     	int getNumChildren();
     	bool isLeaf();
@@ -67,6 +68,9 @@ protected:
 	AVLNode* getRoot() const;
 	/* Methods for rebalancing */
 	void balanceNode(AVLNode*& node);
+
+	int getHeightInteger();
+
 	void updateHeight(AVLNode*& node);
 	// void updateAllHeights();
 	int getBalanceFactor(AVLNode*& node);
