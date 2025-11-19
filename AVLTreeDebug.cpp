@@ -23,7 +23,9 @@ int main() {
 	cout << "tree.insert(F, 6): " << insertResult << endl;
 	insertResult = tree.insert("F", 7);
 	cout << "tree.insert(F, 7): " << insertResult << endl;
-    insertResult = tree.insert("W", 23);
+    insertResult = tree.insert("V", 22);
+	cout << "tree.insert(V, 22): " << insertResult << endl;
+	insertResult = tree.insert("W", 23);
 	cout << "tree.insert(W, 23): " << insertResult << endl;
     insertResult = tree.insert("X", 24);// single rotate left
 	cout << "tree.insert(X, 24) (single rotate left): " << insertResult << endl;

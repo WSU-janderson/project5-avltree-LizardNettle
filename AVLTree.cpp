@@ -337,40 +337,40 @@ int AVLTree::AVLNode::getHeightInteger() {
 void AVLTree::updateHeight(AVLNode*& node) {
 	if (!node) return;
 
-	// get heights of both subtrees, set to -1 if null.
-	size_t leftHeight, rightHeight, height;
+	// get heights of both subtrees, set to 0 if null.
+	int leftHeight = 0;
+	int rightHeight = 0;
+	int height;
 
+	// check for nullptrs, and get heights.
 	if (node->left != nullptr) {
-		leftHeight = node->left->getHeight();
+		leftHeight = node->left->getHeightInteger();
 	}
-	else {leftHeight = -1;}
-
 	if (node->right != nullptr) {
-		rightHeight = node->right->getHeight();
+		rightHeight = node->right->getHeightInteger();
 	}
-	else {rightHeight = -1;}
 
 	// check which subtree is larger, use the largest to calculate height.
-	if (rightHeight >= leftHeight) {
-		height = rightHeight + 1;
+	if (leftHeight > rightHeight) {
+		node->height = leftHeight + 1;
 	} else {
-		height = leftHeight + 1;
+		node->height = rightHeight + 1;
 	}
-	node->setHeight(height);
 }
 int AVLTree::getBalanceFactor(AVLNode*& node) {
 	if (!node) return 0;
 
 	// get heights of both subtrees, set to -1 if null.
-	int leftHeight, rightHeight;
+	int leftHeight = 0;
+	int rightHeight = 0;
 
 	if (node->left != nullptr) {
 		leftHeight = node->left->getHeightInteger();
-	} else {leftHeight = -1;}
+	}
 
 	if (node->right != nullptr) {
 		rightHeight = node->right->getHeightInteger();
-	} else {rightHeight = -1;}
+	}
 
 	return leftHeight - rightHeight;
 }
@@ -403,7 +403,7 @@ AVLTree::AVLNode* AVLTree::rotateRight(AVLNode *&node) {
 	AVLNode* left = node->left;
 	AVLNode* leftRight = node->left->right;
 
-	node->right = node;
+	left->right = node;
 	node->left = leftRight;
 
 	updateHeight(node);
