@@ -32,49 +32,57 @@ int main() {
 
 	std::cout << tree;
 
-    // insertResult = tree.insert("C", );
-    // insertResult = tree.insert("A", 'A'); // single rotate right
-    // cout << endl << endl;
-    // cout << tree << endl;
-    //
-    // insertResult = tree.insert("D", 'D'); // double rotate right
-    // cout << endl << endl;
-    // cout << tree << endl;
-    //
-    // insertResult = tree.insert("R", 'R'); // double rotate left
-    // cout << endl << endl;
-    // cout << tree << endl;
-    //
-    // insertResult = tree.insert("V", 'V');
-    // insertResult = tree.insert("A", 'A'); // false, duplicate
-    // insertResult = tree.insert("Z", 'Z');
-    // insertResult = tree.insert("M", 'M');
-    // insertResult = tree.insert("D", 'D'); // false, duplicate
-    // cout << endl << endl;
-    // cout << tree << endl;
-    //
-    // // size and getHeight
-    // cout << "tree size: " << tree.size() << endl; // 10
-    // cout << "tree height: " << tree.getHeight() << endl; // 3
-    // cout << endl;
-//
-//    // contains
-//    bool containsResult;
-//    containsResult = tree.contains("A"); // true
-//    containsResult = tree.contains("N"); // false
-//
-//    // get
-//    optional<int> getResult;
-//
-//    getResult = tree.get("A"); // 65
-//    cout << "A: " << getResult.value() << endl;
-//
-//    getResult = tree.get("C"); // 67
-//    cout << "C: " << getResult.value() << endl;
-//
-//    getResult = tree.get("Q"); // getResult has no value
-//    cout << "Q: " << getResult.has_value() << endl; // print 0
-//    cout << endl;
+    insertResult = tree.insert("C", 3);
+	cout << "tree.insert(C, 3): " << insertResult << endl;
+    insertResult = tree.insert("A", 1); // single rotate right
+	cout << "tree.insert(A, 1): " << insertResult << endl;
+    cout << endl << endl;
+    cout << tree << endl;
+
+    insertResult = tree.insert("D", 4);
+	cout << "tree.insert(D, 4): " << insertResult << endl;
+	insertResult = tree.insert("E", 5);
+	cout << "tree.insert(E, 5): " << insertResult << endl;
+    cout << endl << endl;
+    cout << tree << endl;
+
+    insertResult = tree.insert("R", 18);
+	cout << "tree.insert(R, 18): " << insertResult << endl;
+    cout << endl << endl;
+    cout << tree << endl;
+
+    insertResult = tree.insert("V", 22);
+    insertResult = tree.insert("A", 1); // false, duplicate
+    insertResult = tree.insert("Z", 26);
+    insertResult = tree.insert("M", 13);
+    insertResult = tree.insert("D", 3); // false, duplicate
+    cout << endl << endl;
+    cout << tree << endl;
+
+	// size and getHeight
+    cout << "tree size: " << tree.size() << endl; // 10
+    cout << "tree height: " << tree.getHeight() << endl; // 3
+    cout << endl;
+
+    // contains
+    bool containsResult;
+    containsResult = tree.contains("A"); // true
+	cout << "contains(A): " << containsResult << endl;
+    containsResult = tree.contains("N"); // false
+	cout << "contains(N): " << containsResult << endl;
+
+    // get
+    optional<int> getResult;
+
+    getResult = tree.get("A"); //
+    cout << "A: " << getResult.value() << endl;
+
+    getResult = tree.get("C"); //
+    cout << "C: " << getResult.value() << endl;
+
+    getResult = tree.get("Q"); // getResult has no value
+    cout << "Q: " << getResult.has_value() << endl; // print 0
+    cout << endl;
 //
 //    // findRange
 //    vector<int> rangeTest = tree.findRange("D", "W");

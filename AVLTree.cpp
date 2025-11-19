@@ -146,7 +146,9 @@ vector<std::string> AVLTree::getAllKeys(AVLNode* current, vector<string>& keys) 
 	return keys;
 }
 
-size_t AVLTree::size() const {}
+size_t AVLTree::size() const {
+	return keys().size();
+}
 /**
  * Checks the height of the AVLTree by checking the left and right subtrees of root
  * recursively and returning the higher value
@@ -591,7 +593,7 @@ bool AVLTree::removeNode(AVLNode*& current){
 std::optional<size_t> AVLTree::get(const string& key, AVLNode* current) const {
 	// BASE CASE 1: nullptr, key not in tree //
 	if (current == nullptr) {
-		return false;
+		return nullopt;
 	}
 	// recurse left
 	optional<size_t> result = get(key, current->left);
