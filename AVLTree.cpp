@@ -158,6 +158,7 @@ size_t AVLTree::getHeight() const {
 
 std::ostream& operator<<(ostream& os, const AVLTree& AVLTree) {
 	AVLTree.printTree(os, AVLTree.root, 0);
+	return os;
 }
 
 void AVLTree::printTree(ostream& os, AVLNode* current, size_t depth) const {
@@ -316,6 +317,8 @@ void AVLTree::balanceNode(AVLNode *&node) {
 			}
 		}
 		if (rightRightHeight >= rightLeftHeight) {
+			rotateLeft(node);
+		} else {
 			rotateRight(node->right);
 			rotateLeft(node);
 		}
