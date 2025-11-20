@@ -42,7 +42,10 @@ size_t& AVLTree::operator[](const std::string& key) {
 	return zero;
 }
 
-
+/**
+ *
+ * @param other
+ */
 void AVLTree::operator=(const AVLTree& other) {
 }
 
@@ -88,10 +91,21 @@ bool AVLTree::remove(const std::string& key) {
 	return false;
 }
 
+/**
+ * Recursively checks if the given key is in the AVLTree.
+ * @param key the key being checked
+ * @return returns true if the key is in the AVLTree and false otherwise.
+ */
 bool AVLTree::contains(const string& key) const {
 	return containsRecursive(root, key);
 }
 
+/**
+ * recursive helper method of contains. Traverses the entire tree to search for the given key.
+ * @param current the current node being checked
+ * @param key the key being searched for
+ * @return returns true if the key is in the AVLTree and false otherwise.
+ */
 bool AVLTree::containsRecursive(AVLNode* current, const string& key) const {
 	// BASE CASE: if null, key not in tree
 	if (current == nullptr) {
@@ -120,15 +134,61 @@ std::optional<size_t> AVLTree::get(const string& key) const {
 	return get(key, root);
 }
 
+/**
+ * returns a vector of all values in the AVLTree which are higher than lowKeys value and lower than highKeys value
+ * @param lowKey the key associated with a lower value
+ * @param highKey the key associated with a higher value
+ * @return returns a vector<string> of all AVLNodes with a value between that of lowKey and highKey.
+ */
+vector<std::string> AVLTree::findRange(const std::string& lowKey, const std::string& highKey) const {
+	vector<std::string> range;
+	std::optional<size_t> lowVal = get(lowKey);
+	std::optional<size_t> highVal = get(highKey);
+	if (lowVal.has_value() && highVal.has_value()) {
 
-vector<std::string> AVLTree::findRange(const std::string& lowKey, const std::string& highKey) const {}
+	}
+	return range;
+}
 
+/**
+ * Recursive helper method of findRange which checks for values belonging in the vector via inorder traversal.
+ * @param range the vector storing the values
+ * @param lowVal the lower value
+ * @param highVal the higher value
+ * @param current the current node being checked
+ * @return returns the range vector with values.
+ */
+vector<std::string> AVLTree::findRange(vector<std::string> range, size_t lowVal, size_t highVal, AVLNode* current) const {
+	if (current == nullptr) {
+		return range;
+	}
+	findRange(range, lowVal, highVal, current->left); // recurse left
+
+	// if current value is between highval and lowval, add to vector
+	if (current->value >= lowVal && current->value <= highVal) {
+		range.push_back(current->key);
+	}
+	findRange(range, lowVal, highVal, current->right); // recurse right
+
+	return range;
+}
+
+/**
+ * recursively forms a list of all keys in the AVLTree
+ * @return returns a vector of all keys in the AVLTree.
+ */
 vector<std::string> AVLTree::keys() const {
 	vector<string> keys;
 	keys = getAllKeys(root, keys);
 	return keys;
 }
 
+/**
+ * recursive helper method of keys. Contains all of the actual logic for keys.
+ * @param current the current node being checked.
+ * @param keys the vector containing the AVLTree keys.
+ * @return returns keys
+ */
 vector<std::string> AVLTree::getAllKeys(AVLNode* current, vector<string>& keys) const {
 	// BASE CASE: nullptr, no more nodes on this branch.
 	if (current == nullptr) {
@@ -146,6 +206,10 @@ vector<std::string> AVLTree::getAllKeys(AVLNode* current, vector<string>& keys) 
 	return keys;
 }
 
+/**
+ * finds the size of the AVLTree by checking how many keys are in the tree.
+ * @return returns the number of key-pair values in the tree.
+ */
 size_t AVLTree::size() const {
 	return keys().size();
 }
@@ -158,11 +222,25 @@ size_t AVLTree::getHeight() const {
 	return height(root);
 }
 
+/**
+ * converts the AVLTree into an ostream.
+ * @param os ostream reference
+ * @param AVLTree the AVLTree being printed
+ * @return returns os
+ */
 std::ostream& operator<<(ostream& os, const AVLTree& AVLTree) {
 	AVLTree.printTree(os, AVLTree.root, 0);
 	return os;
 }
 
+/**
+ * recursive helper method of operator<<
+ *
+ * prints right to left while using indents to represent depth.
+ * @param os ostream reference
+ * @param current the current node being printed
+ * @param depth the depth of the current node
+ */
 void AVLTree::printTree(ostream& os, AVLNode* current, size_t depth) const {
 	// BASE CASE: no more to print down this subtree if current == nullptr.
 	if (current == nullptr) {
@@ -187,6 +265,9 @@ void AVLTree::printTree(ostream& os, AVLNode* current, size_t depth) const {
 = ------------- =================================================
 = The AVLNode class defines the nodes which make up an AVLTree. =
 ================================================================= */
+/**
+ * the default(empty) constructor of AVLNode
+ */
 AVLTree::AVLNode::AVLNode() {
 	this->key = "";
 	this->value = 0;
@@ -195,6 +276,11 @@ AVLTree::AVLNode::AVLNode() {
 	height = 0;
 }
 
+/**
+ * constructor with starting values for value and key
+ * @param key the key being loaded
+ * @param value the value being loaded
+ */
 AVLTree::AVLNode::AVLNode(std::string &key, size_t value) {
 	this->key = key;
 	this->value = value;
@@ -203,46 +289,92 @@ AVLTree::AVLNode::AVLNode(std::string &key, size_t value) {
 	height = 0;
 }
 
+/**
+ * sets the key and value of the node
+ * @param key the key being loaded
+ * @param value the value being loaded
+ */
 void AVLTree::AVLNode::load(std::string &key, size_t value) {
 	this->key = key;
 	this->value = value;
 }
-AVLTree::AVLNode* AVLTree::AVLNode::insertRight(AVLNode* rightChild) {
+
+/**
+ * sets the right reference to rightChild
+ * @param rightChild the new rightChild of this node
+ */
+void AVLTree::AVLNode::insertRight(AVLNode* rightChild) {
 	this->right = rightChild;
 }
-AVLTree::AVLNode* AVLTree::AVLNode::insertLeft(AVLNode* leftChild) {
+
+/**
+ * sets the left reference to leftChild
+ * @param leftChild the new leftChild of this node
+ */
+void AVLTree::AVLNode::insertLeft(AVLNode* leftChild) {
 	this->left = leftChild;
 }
 
+/**
+ * sets the height of the node
+ * @param height the new height
+ */
 void AVLTree::AVLNode::setHeight(int height) {
 	this->height = height;
 }
 
 // ACCESSORS //
+/**
+ * accessor for the key variable.
+ * @return returns the key of the node
+ */
 std::string AVLTree::AVLNode::getKey() {
 	return this->key;
 }
 
+/**
+ * accessor for value
+ * @return returns the value of the AVLNode
+ */
 size_t AVLTree::AVLNode::getValue() {
 	return this->value;
 }
 
+/**
+ * accessor for height
+ * @return returns the height of the AVLNode
+ */
 size_t AVLTree::AVLNode::getHeight() {
 	return this->height;
 }
 
+/**
+ * alternate accessor for value which returns a reference
+ * @return returns a reference to value
+ */
 size_t &AVLTree::AVLNode::getValueRef() {
 	return this->value;
 }
 
+/**
+ * returns a reference to this nodes left child.
+ * @return returns a reference to left
+ */
 AVLTree::AVLNode *&AVLTree::AVLNode::getLeft() {
 	return this->left;
 }
-
+/**
+ * returns a reference to this nodes left child.
+ * @return returns a reference to right
+ */
 AVLTree::AVLNode *&AVLTree::AVLNode::getRight() {
 	return this->right;
 }
 
+/**
+ *
+ * @return returns the height of this node
+ */
 int AVLTree::AVLNode::getNodeHeight() {
 	return this->height;
 }
@@ -260,10 +392,17 @@ int AVLTree::AVLNode::getNumChildren() {
 	return 0;
 }
 
+/**
+ * checks if this node is a leaf by checking its left and right pointer
+ * @return returns true if the node is a leaf
+ */
 bool AVLTree::AVLNode::isLeaf() {
 	return this->left == nullptr && this->right == nullptr;
 }
 
+/**
+ * @return returns a reference to this trees root node.
+ */
 AVLTree::AVLNode *AVLTree::getRoot() const {
 	return root;
 }
@@ -327,6 +466,10 @@ void AVLTree::balanceNode(AVLNode *&node) {
 	}
 }
 
+/**
+ * This returns the height as an int instead of a size_t because CLion gets annoyed when I mix int and size_t variables.
+ * @return returns the height of this node as an integer
+ */
 int AVLTree::AVLNode::getHeightInteger() {
 	return static_cast<int>(this->getHeight());
 }
@@ -359,6 +502,15 @@ void AVLTree::updateHeight(AVLNode*& node) {
 		node->height = rightHeight + 1;
 	}
 }
+
+/**
+ * checks the balance factor of an individual node.
+ *
+ * A positive balance factor implies the node if left heavy,
+ * while a negative balance factor implies right heavy
+ * @param node the node being checked
+ * @return returns the balance factor of the AVLNode
+ */
 int AVLTree::getBalanceFactor(AVLNode*& node) {
 	if (!node) return 0;
 
@@ -377,6 +529,11 @@ int AVLTree::getBalanceFactor(AVLNode*& node) {
 	return leftHeight - rightHeight;
 }
 
+/**
+ * performs a left rotation at the provided node
+ * @param node the node being rotated
+ * @return returns a reference to the node
+ */
 AVLTree::AVLNode* AVLTree::rotateLeft(AVLNode *&node) {
 	if (!node || !node->right) {
 		return node;
@@ -396,6 +553,11 @@ AVLTree::AVLNode* AVLTree::rotateLeft(AVLNode *&node) {
 	return node;
 }
 
+/**
+ * performs a right rotation at the provided node
+ * @param node the node being rotated
+ * @return returns a reference to the node
+ */
 AVLTree::AVLNode* AVLTree::rotateRight(AVLNode *&node) {
 	if (!node || !node->left) {
 		return node;
@@ -415,12 +577,22 @@ AVLTree::AVLNode* AVLTree::rotateRight(AVLNode *&node) {
 	return node;
 }
 
+/**
+ * performs a left then right rotation at the provided node
+ * @param node the node being rotated
+ * @return returns a reference to the node
+ */
 AVLTree::AVLNode* AVLTree::rotateLeftRight(AVLNode *&node) {
 	// left rotate node->left, then right rotate node
 	rotateLeft(node->left);
 	return rotateRight(node);
 }
 
+/**
+ * performs a right then left rotation at the provided node
+ * @param node the node being rotated
+ * @return returns a reference to the node
+ */
 AVLTree::AVLNode* AVLTree::rotateRightLeft(AVLNode *&node) {
 	// right rotate node->right, then left rotate node
 	rotateRight(node->right);

@@ -45,8 +45,8 @@ protected:
     	AVLNode(std::string &key, size_t value);
 
     	void load(std::string &key, size_t value);
-    	AVLNode* insertRight(AVLNode* rightChild);
-    	AVLNode* insertLeft(AVLNode* leftChild);
+    	void insertRight(AVLNode* rightChild);
+    	void insertLeft(AVLNode* leftChild);
     	void setHeight(int height);
 
     	std::string getKey();
@@ -68,9 +68,6 @@ protected:
 	AVLNode* getRoot() const;
 	/* Methods for rebalancing */
 	void balanceNode(AVLNode*& node);
-
-	int getHeightInteger();
-
 	void updateHeight(AVLNode*& node);
 	// void updateAllHeights();
 	int getBalanceFactor(AVLNode*& node);
@@ -81,7 +78,6 @@ protected:
 
 	/* Recursive helper methods */
 	size_t height(AVLNode* current) const;
-	size_t inorderTraversal(AVLNode*& current);
 	void printTree(ostream& os, AVLNode* current, size_t depth) const;
 	bool insertNode(string& key, size_t value, AVLNode*& current);
 	bool remove(AVLNode*& current, KeyType key, size_t value);
@@ -92,6 +88,8 @@ protected:
 	AVLNode* getNodeRef(const string& key, AVLNode* current);
 	vector<string> getAllKeys(AVLNode* current, vector<string>& keys) const;
 	bool containsRecursive(AVLNode* current, const string& key) const;
+	vector<std::string> findRange(vector<std::string> range, size_t lowVal, size_t highVal, AVLNode* current) const;
+
 
 
 };
