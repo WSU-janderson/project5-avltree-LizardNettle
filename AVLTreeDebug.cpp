@@ -83,21 +83,22 @@ int main() {
     getResult = tree.get("Q"); // getResult has no value
     cout << "Q: " << getResult.has_value() << endl; // print 0
     cout << endl;
-//
-//    // findRange
-//    vector<int> rangeTest = tree.findRange("D", "W");
-//    // 70 68 82 75 77 86
-//    for (auto val: rangeTest) {
-//        cout << val << " ";
-//    }
-//    cout << endl << endl;
-//
-//    // operator[]
-//    tree["A"] = 108;
-//    cout << tree << endl;
-//    cout << endl;
-//
-//    // remove
+
+    // findRange
+	cout << "FINDRANGE" << endl;
+    vector<size_t> rangeTest = tree.findRange("A", "D");
+    // 70 68 82 75 77 86
+    for (auto val: rangeTest) {
+        cout << val << " ";
+    }
+    cout << endl << endl;
+
+    // operator[]
+    tree["A"] = 108;
+    cout << tree << endl;
+    cout << endl;
+
+    // remove
     bool removeResult;
     removeResult= tree.remove("A"); // "A" is a leaf
     cout << endl << endl;

@@ -140,12 +140,12 @@ std::optional<size_t> AVLTree::get(const string& key) const {
  * @param highKey the key associated with a higher value
  * @return returns a vector<string> of all AVLNodes with a value between that of lowKey and highKey.
  */
-vector<std::string> AVLTree::findRange(const std::string& lowKey, const std::string& highKey) const {
-	vector<std::string> range;
+vector<size_t> AVLTree::findRange(const std::string& lowKey, const std::string& highKey) const {
+	vector<size_t> range;
 	std::optional<size_t> lowVal = get(lowKey);
 	std::optional<size_t> highVal = get(highKey);
 	if (lowVal.has_value() && highVal.has_value()) {
-
+		range = findRange(range, lowVal.value(), highVal.value(), root);
 	}
 	return range;
 }
@@ -158,17 +158,17 @@ vector<std::string> AVLTree::findRange(const std::string& lowKey, const std::str
  * @param current the current node being checked
  * @return returns the range vector with values.
  */
-vector<std::string> AVLTree::findRange(vector<std::string> range, size_t lowVal, size_t highVal, AVLNode* current) const {
+vector<size_t> AVLTree::findRange(vector<size_t> range, size_t lowVal, size_t highVal, AVLNode* current) const {
 	if (current == nullptr) {
 		return range;
 	}
-	findRange(range, lowVal, highVal, current->left); // recurse left
+	range = findRange(range, lowVal, highVal, current->left); // recurse left
 
 	// if current value is between highval and lowval, add to vector
 	if (current->value >= lowVal && current->value <= highVal) {
-		range.push_back(current->key);
+		range.push_back(current->value);
 	}
-	findRange(range, lowVal, highVal, current->right); // recurse right
+	range = findRange(range, lowVal, highVal, current->right); // recurse right
 
 	return range;
 }

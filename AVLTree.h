@@ -25,7 +25,7 @@ public:
 	bool remove(const string& key);
 	bool contains(const string& key) const;
 	std::optional<size_t> get(const string& key) const;
-	vector<std::string> findRange(const std::string& lowKey, const std::string& highKey) const;
+	vector<size_t> findRange(const std::string& lowKey, const std::string& highKey) const;
 	vector<std::string> keys() const;
 	size_t size() const;
 	size_t getHeight() const;
@@ -88,7 +88,7 @@ protected:
 	AVLNode* getNodeRef(const string& key, AVLNode* current);
 	vector<string> getAllKeys(AVLNode* current, vector<string>& keys) const;
 	bool containsRecursive(AVLNode* current, const string& key) const;
-	vector<std::string> findRange(vector<std::string> range, size_t lowVal, size_t highVal, AVLNode* current) const;
+	vector<size_t> findRange(vector<size_t> range, size_t lowVal, size_t highVal, AVLNode* current) const;
 
 
 
